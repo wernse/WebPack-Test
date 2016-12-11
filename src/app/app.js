@@ -1,6 +1,7 @@
-import angular from 'angular';
+import '../scripts/angular.js';
 
 import '../style/app.css';
+import './app.scss';
 
 let app = () => {
   return {
@@ -10,16 +11,27 @@ let app = () => {
   }
 };
 
-class AppCtrl {
-  constructor() {
-    this.url = 'https://github.com/preboot/angular-webpack';
-  }
-}
-
 const MODULE_NAME = 'app';
 
 angular.module(MODULE_NAME, [])
   .directive('app', app)
   .controller('AppCtrl', AppCtrl);
+
+AppCtrl.$inject = ['$http']
+
+function AppCtrl($http){
+  var ctrl = this;
+  ctrl.url = 'https://github.com/preboot/angular-webpacks';
+  console.log("hello")
+  var settings = {
+    method: "GET",
+    url:"api/values"
+  }
+  $http(settings).then((data)=>{
+    console.log(data);
+  }).catch((error)=>{
+    console.log(error);
+  })
+}
 
 export default MODULE_NAME;

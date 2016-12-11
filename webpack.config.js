@@ -28,6 +28,7 @@ module.exports = function makeWebpackConfig () {
    * Reference: http://webpack.github.io/docs/configuration.html#entry
    * Should be an empty object if it's generating a test build
    * Karma will set this when it's a test build
+   * entry point is where it goes to do DFS to find the other dependencies
    */
   config.entry = isTest ? {} : {
     app: './src/app/app.js'
@@ -41,7 +42,7 @@ module.exports = function makeWebpackConfig () {
    */
   config.output = isTest ? {} : {
     // Absolute output directory
-    path: __dirname + '/dist',
+    path: __dirname + '/cow',
 
     // Output path from the view of the page
     // Uses webpack-dev-server in development
@@ -87,7 +88,12 @@ module.exports = function makeWebpackConfig () {
       test: /\.js$/,
       loader: 'babel',
       exclude: /node_modules/
-    }, {
+    }, 
+      {
+    test: /\.scss$/,
+    loaders: ["style-loader", "css-loader", "sass-loader"]
+  },
+  {
       // CSS LOADER
       // Reference: https://github.com/webpack/css-loader
       // Allow loading css through js
@@ -202,7 +208,13 @@ module.exports = function makeWebpackConfig () {
    */
   config.devServer = {
     contentBase: './src/public',
-    stats: 'minimal'
+    stats: 'minimal',
+    proxy: {
+      '/api/**': {
+        target: 'http://localhost:58814',
+        secure: false
+      }
+    }
   };
 
   return config;
